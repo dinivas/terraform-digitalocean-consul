@@ -1,18 +1,16 @@
-# shepherd
+# Terraform Openstack Consul
 
-Introduce your module briefly.
+Terraform module that install __Hashicorp Consul__ in Openstack using provided infos.
 
-## Usage
-
-Provide the sample code to use your module.
-
-## Scenarios
-
-Provide advanced use cases here.
 
 ## Examples
 
-Paste the links to your sample code in `examples` folder.
+```
+module "consul" {
+  source = "../../"
+
+}
+```
 
 ## Inputs
 
