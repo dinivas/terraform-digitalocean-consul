@@ -1,4 +1,101 @@
-resource "random_shuffle" "rs" {
-  input        = ["${var.raw_string_list}"]
-  result_count = "${var.permutation_count}"
+data "openstack_networking_network_v2" "consul_cluster_network" {
+  count = "${var.enable_consul_cluster}"
+
+  name = "${var.consul_cluster_network}"
+}
+
+data "openstack_networking_subnet_v2" "consul_cluster_subnet" {
+  count = "${var.enable_consul_cluster}"
+
+  name = "${var.consul_cluster_subnet}"
+}
+
+# Consul servers definitions
+data "template_file" "consul_server_user_data" {
+  template = "${file("${path.module}/template/consul-user-data.tpl")}"
+
+  vars = {
+    consul_agent_mode         = "server"
+    consul_server_count       = "${var.consul_server_instance_count}"
+    consul_cluster_domain     = "${var.consul_cluster_domain}"
+    consul_cluster_datacenter = "${var.consul_cluster_datacenter}"
+    consul_cluster_name       = "${var.consul_cluster_name}"
+    os_auth_domain_name       = "${var.os_auth_domain_name}"
+    os_auth_username          = "${var.os_auth_username}"
+    os_auth_password          = "${var.os_auth_password}"
+    os_auth_url               = "${var.os_auth_url}"
+    os_project_id             = "${var.os_project_id}"
+  }
+}
+
+module "consul_server_instance" {
+  source = "github.com/dinivas/terraform-openstack-instance"
+
+  instance_name                 = "${var.consul_cluster_name}-server"
+  instance_count                = "${var.consul_server_instance_count}"
+  image_name                    = "${var.consul_server_image_name}"
+  flavor_name                   = "${var.consul_server_flavor_name}"
+  keypair                       = "${var.consul_server_keypair_name}"
+  network_ids                   = ["${data.openstack_networking_network_v2.consul_cluster_network.0.id}"]
+  subnet_ids                    = ["${data.openstack_networking_subnet_v2.consul_cluster_subnet.*.id}"]
+  instance_security_group_name  = "${var.consul_cluster_name}-server-sg"
+  instance_security_group_rules = "${var.consul_cluster_security_group_rules}"
+  security_groups_to_associate  = "${var.consul_cluster_security_groups_to_associate}"
+  metadata                      = "${var.consul_cluster_metadata}"
+  user_data                     = "${data.template_file.consul_server_user_data.rendered}"
+  enabled                       = "${var.enable_consul_cluster}"
+  availability_zone             = "${var.consul_cluster_availability_zone}"
+}
+
+// Conditional floating ip on the first Consul server
+resource "openstack_networking_floatingip_v2" "consul_cluster_floatingip" {
+  count = "${var.consul_cluster_floating_ip_pool != "" ? var.enable_consul_cluster * 1 : 0}"
+
+  pool = "${var.consul_cluster_floating_ip_pool}"
+}
+
+resource "openstack_compute_floatingip_associate_v2" "consul_cluster_floatingip_associate" {
+  count = "${var.consul_cluster_floating_ip_pool != "" ? var.enable_consul_cluster * 1: 0}"
+
+  floating_ip           = "${lookup(openstack_networking_floatingip_v2.consul_cluster_floatingip[count.index], "address")}"
+  instance_id           = "${module.consul_server_instance.ids[count.index]}"
+  fixed_ip              = "${module.consul_server_instance.network_fixed_ip_v4[count.index]}"
+  wait_until_associated = true
+}
+
+# Consul client definitions
+
+data "template_file" "consul_client_user_data" {
+  template = "${file("${path.module}/template/consul-user-data.tpl")}"
+
+  vars = {
+    consul_agent_mode         = "client"
+    consul_cluster_domain     = "${var.consul_cluster_domain}"
+    consul_cluster_datacenter = "${var.consul_cluster_datacenter}"
+    consul_cluster_name       = "${var.consul_cluster_name}"
+    os_auth_domain_name       = "${var.os_auth_domain_name}"
+    os_auth_username          = "${var.os_auth_username}"
+    os_auth_password          = "${var.os_auth_password}"
+    os_auth_url               = "${var.os_auth_url}"
+    os_project_id             = "${var.os_project_id}"
+  }
+}
+
+module "consul_client_instance" {
+  source = "github.com/dinivas/terraform-openstack-instance"
+
+  instance_name                 = "${var.consul_cluster_name}-client"
+  instance_count                = "${var.consul_client_instance_count}"
+  image_name                    = "${var.consul_client_image_name}"
+  flavor_name                   = "${var.consul_client_flavor_name}"
+  keypair                       = "${var.consul_client_keypair_name}"
+  network_ids                   = ["${data.openstack_networking_network_v2.consul_cluster_network.0.id}"]
+  subnet_ids                    = ["${data.openstack_networking_subnet_v2.consul_cluster_subnet.*.id}"]
+  instance_security_group_name  = "${var.consul_cluster_name}-client-sg"
+  instance_security_group_rules = "${var.consul_cluster_security_group_rules}"
+  security_groups_to_associate  = "${var.consul_cluster_security_groups_to_associate}"
+  metadata                      = "${var.consul_cluster_metadata}"
+  user_data                     = "${data.template_file.consul_client_user_data.rendered}"
+  enabled                       = "${var.enable_consul_cluster}"
+  availability_zone             = "${var.consul_cluster_availability_zone}"
 }
