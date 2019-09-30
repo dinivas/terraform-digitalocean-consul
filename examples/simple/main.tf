@@ -21,9 +21,4 @@ module "consul_cluster" {
   consul_cluster_metadata = {
     consul_cluster_name = "dnv-consul"
   }
-  os_auth_domain_name = "default"
-  os_auth_username    = "admin"
-  os_auth_password    = "yfCOIh4DwkiHMeMGgdzraI0XYEqpVwNlmcS05gQt"
-  os_auth_url         = "http://cloud.runadium.fr:5000/v3"
-  os_project_id       = "c923a362940f49948d46b0073014705b"
 }
