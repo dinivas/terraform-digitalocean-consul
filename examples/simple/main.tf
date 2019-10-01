@@ -23,7 +23,7 @@ module "consul_cluster" {
   consul_cluster_datacenter                   = "gra"
   consul_cluster_availability_zone            = "nova:node03"
   consul_cluster_network_id                   = "${data.openstack_networking_network_v2.consul_cluster_network.0.id}"
-  consul_cluster_subnet_id                    = "${data.openstack_networking_subnet_v2.consul_cluster_subnet.0.id}"
+  consul_cluster_subnet_id                    = "[${data.openstack_networking_subnet_v2.consul_cluster_subnet.0.id}]"
   consul_cluster_floating_ip_pool             = "public"
   consul_server_instance_count                = 2
   consul_server_image_name                    = "Dinivas Base"

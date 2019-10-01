@@ -31,7 +31,8 @@ variable "consul_cluster_network_id" {
 
 variable "consul_cluster_subnet_id" {
   description = "The Network subnet Id for the cluster"
-  type        = "string"
+  type        = "list"
+  default     = []
 }
 
 variable "consul_cluster_security_group_rules" {

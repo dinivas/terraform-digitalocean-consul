@@ -25,7 +25,7 @@ module "consul_server_instance" {
   flavor_name                   = "${var.consul_server_flavor_name}"
   keypair                       = "${var.consul_server_keypair_name}"
   network_ids                   = ["${var.consul_cluster_network_id}"]
-  subnet_ids                    = ["${var.consul_cluster_subnet_id}"]
+  subnet_ids                    = "${var.consul_cluster_subnet_id}"
   instance_security_group_name  = "${var.consul_cluster_name}-server-sg"
   instance_security_group_rules = "${var.consul_cluster_security_group_rules}"
   security_groups_to_associate  = "${var.consul_cluster_security_groups_to_associate}"
@@ -78,7 +78,7 @@ module "consul_client_instance" {
   flavor_name                   = "${var.consul_client_flavor_name}"
   keypair                       = "${var.consul_client_keypair_name}"
   network_ids                   = ["${var.consul_cluster_network_id}"]
-  subnet_ids                    = ["${var.consul_cluster_subnet_id}"]
+  subnet_ids                    = "${var.consul_cluster_subnet_id}"
   instance_security_group_name  = "${var.consul_cluster_name}-client-sg"
   instance_security_group_rules = "${var.consul_cluster_security_group_rules}"
   security_groups_to_associate  = "${var.consul_cluster_security_groups_to_associate}"
