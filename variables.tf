@@ -3,6 +3,12 @@ variable "enable_consul_cluster" {
   default = "1"
 }
 
+variable "consul_depends_on" {
+  type    = "list"
+  default = []
+}
+
+
 variable "consul_cluster_name" {
   description = "The Consul cluster name"
   type        = "string"
@@ -110,7 +116,7 @@ variable "os_auth_url" {
 }
 
 variable "os_auth_domain_name" {
-  type = "string"
+  type    = "string"
   default = "default"
 }
 

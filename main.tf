@@ -2,12 +2,16 @@ data "openstack_networking_network_v2" "consul_cluster_network" {
   count = "${var.enable_consul_cluster}"
 
   name = "${var.consul_cluster_network}"
+
+  depends_on = "${var.consul_depends_on}"
 }
 
 data "openstack_networking_subnet_v2" "consul_cluster_subnet" {
   count = "${var.enable_consul_cluster}"
 
   name = "${var.consul_cluster_subnet}"
+
+  depends_on = "${var.consul_depends_on}"
 }
 
 # Consul servers definitions
