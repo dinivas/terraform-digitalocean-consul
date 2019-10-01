@@ -1,19 +1,3 @@
-data "openstack_networking_network_v2" "consul_cluster_network" {
-  count = "${var.enable_consul_cluster}"
-
-  name = "${var.consul_cluster_network}"
-
-  depends_on = "${var.consul_depends_on}"
-}
-
-data "openstack_networking_subnet_v2" "consul_cluster_subnet" {
-  count = "${var.enable_consul_cluster}"
-
-  name = "${var.consul_cluster_subnet}"
-
-  depends_on = "${var.consul_depends_on}"
-}
-
 # Consul servers definitions
 data "template_file" "consul_server_user_data" {
   template = "${file("${path.module}/template/consul-user-data.tpl")}"
@@ -40,8 +24,8 @@ module "consul_server_instance" {
   image_name                    = "${var.consul_server_image_name}"
   flavor_name                   = "${var.consul_server_flavor_name}"
   keypair                       = "${var.consul_server_keypair_name}"
-  network_ids                   = ["${data.openstack_networking_network_v2.consul_cluster_network.0.id}"]
-  subnet_ids                    = ["${data.openstack_networking_subnet_v2.consul_cluster_subnet.*.id}"]
+  network_ids                   = ["${var.consul_cluster_network_id}"]
+  subnet_ids                    = ["${var.consul_cluster_subnet_id}"]
   instance_security_group_name  = "${var.consul_cluster_name}-server-sg"
   instance_security_group_rules = "${var.consul_cluster_security_group_rules}"
   security_groups_to_associate  = "${var.consul_cluster_security_groups_to_associate}"
@@ -59,7 +43,7 @@ resource "openstack_networking_floatingip_v2" "consul_cluster_floatingip" {
 }
 
 resource "openstack_compute_floatingip_associate_v2" "consul_cluster_floatingip_associate" {
-  count = "${var.consul_cluster_floating_ip_pool != "" ? var.enable_consul_cluster * 1: 0}"
+  count = "${var.consul_cluster_floating_ip_pool != "" ? var.enable_consul_cluster * 1 : 0}"
 
   floating_ip           = "${lookup(openstack_networking_floatingip_v2.consul_cluster_floatingip[count.index], "address")}"
   instance_id           = "${module.consul_server_instance.ids[count.index]}"
@@ -93,8 +77,8 @@ module "consul_client_instance" {
   image_name                    = "${var.consul_client_image_name}"
   flavor_name                   = "${var.consul_client_flavor_name}"
   keypair                       = "${var.consul_client_keypair_name}"
-  network_ids                   = ["${data.openstack_networking_network_v2.consul_cluster_network.0.id}"]
-  subnet_ids                    = ["${data.openstack_networking_subnet_v2.consul_cluster_subnet.*.id}"]
+  network_ids                   = ["${var.consul_cluster_network_id}"]
+  subnet_ids                    = ["${var.consul_cluster_subnet_id}"]
   instance_security_group_name  = "${var.consul_cluster_name}-client-sg"
   instance_security_group_rules = "${var.consul_cluster_security_group_rules}"
   security_groups_to_associate  = "${var.consul_cluster_security_groups_to_associate}"

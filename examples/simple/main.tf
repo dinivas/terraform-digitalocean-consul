@@ -1,3 +1,19 @@
+data "openstack_networking_network_v2" "consul_cluster_network" {
+  count = "${var.enable_consul_cluster}"
+
+  name = "${var.consul_cluster_network}"
+
+  depends_on = "${var.consul_depends_on}"
+}
+
+data "openstack_networking_subnet_v2" "consul_cluster_subnet" {
+  count = "${var.enable_consul_cluster}"
+
+  name = "${var.consul_cluster_subnet}"
+
+  depends_on = "${var.consul_depends_on}"
+}
+
 module "consul_cluster" {
   source = "../../"
 
@@ -6,8 +22,8 @@ module "consul_cluster" {
   consul_cluster_domain                       = "dinivas"
   consul_cluster_datacenter                   = "gra"
   consul_cluster_availability_zone            = "nova:node03"
-  consul_cluster_network                      = "dnv-mgmt"
-  consul_cluster_subnet                       = "dnv-mgmt-subnet"
+  consul_cluster_network_id                   = "${data.openstack_networking_network_v2.consul_cluster_network.0.id}"
+  consul_cluster_subnet_id                    = "${data.openstack_networking_subnet_v2.consul_cluster_subnet.0.id}"
   consul_cluster_floating_ip_pool             = "public"
   consul_server_instance_count                = 2
   consul_server_image_name                    = "Dinivas Base"

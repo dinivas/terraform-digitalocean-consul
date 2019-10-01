@@ -3,12 +3,6 @@ variable "enable_consul_cluster" {
   default = "1"
 }
 
-variable "consul_depends_on" {
-  type    = "list"
-  default = []
-}
-
-
 variable "consul_cluster_name" {
   description = "The Consul cluster name"
   type        = "string"
@@ -30,13 +24,13 @@ variable "consul_cluster_availability_zone" {
   default     = "null"
 }
 
-variable "consul_cluster_network" {
-  description = "The Network name of the cluster"
+variable "consul_cluster_network_id" {
+  description = "The Network Id of the cluster"
   type        = "string"
 }
 
-variable "consul_cluster_subnet" {
-  description = "The Network subnet name for the cluster"
+variable "consul_cluster_subnet_id" {
+  description = "The Network subnet Id for the cluster"
   type        = "string"
 }
 
