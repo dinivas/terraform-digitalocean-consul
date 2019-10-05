@@ -63,6 +63,19 @@ write_files:
     owner: consul:bin
     path: /etc/consul/config.json
     permissions: '644'
+ %{ if if consul_agent_mode == "server" }
+-   content: |
+        {"service":
+            {"name": "${consul_cluster_name}-dashboard",
+            "tags": ["web"],
+            "port": 8500
+            }
+        }
+
+    owner: consul:consul
+    path: /etc/consul/consul.d/consul-dashboard-service.json
+    permissions: '644'
+%{ endif }
 -   content: |
         #!/bin/sh
 
