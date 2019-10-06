@@ -72,7 +72,7 @@ write_files:
             }
         }
 
-    owner: consul:consul
+    owner: consul:bin
     path: /etc/consul/consul.d/consul-dashboard-service.json
     permissions: '644'
 %{ endif }
