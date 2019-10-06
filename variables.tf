@@ -37,16 +37,7 @@ variable "consul_cluster_subnet_id" {
 
 variable "consul_cluster_security_group_rules" {
   type = list(map(any))
-  default = [
-    {
-      direction        = "ingress"
-      ethertype        = "IPv4"
-      protocol         = "tcp"
-      port_range_min   = 8500
-      port_range_max   = 8500
-      remote_ip_prefix = ""
-    }
-  ]
+  default = []
   description = "The definition os security groups to associate to instance. Only one is allowed"
 }
 
