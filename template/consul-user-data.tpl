@@ -63,7 +63,7 @@ write_files:
     owner: consul:bin
     path: /etc/consul/config.json
     permissions: '644'
- %{ if if consul_agent_mode == "server" }
+ %{ if consul_agent_mode == "server" }
 -   content: |
         {"service":
             {"name": "${consul_cluster_name}-dashboard",
