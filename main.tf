@@ -1,6 +1,10 @@
+data "http" "generic_user_data_template" {
+  url = "${var.generic_user_data_file_url}"
+}
+
 # Consul servers definitions
 data "template_file" "consul_server_user_data" {
-  template = "${file("${path.module}/template/consul-user-data.tpl")}"
+  template = "${data.http.generic_user_data_template.body}"
 
   vars = {
     consul_agent_mode         = "server"
@@ -13,6 +17,18 @@ data "template_file" "consul_server_user_data" {
     os_auth_password          = "${var.os_auth_password}"
     os_auth_url               = "${var.os_auth_url}"
     os_project_id             = "${var.os_project_id}"
+
+    pre_configure_script     = ""
+    custom_write_files_block = "${data.template_file.consul_server_user_data_write_files.rendered}"
+    post_configure_script    = ""
+  }
+}
+
+data "template_file" "consul_server_user_data_write_files" {
+  template = "${file("${path.module}/templates/consul-server-user-data.tpl")}"
+
+  vars = {
+    consul_cluster_name = "${var.consul_cluster_name}"
   }
 }
 
@@ -54,7 +70,7 @@ resource "openstack_compute_floatingip_associate_v2" "consul_cluster_floatingip_
 # Consul client definitions
 
 data "template_file" "consul_client_user_data" {
-  template = "${file("${path.module}/template/consul-user-data.tpl")}"
+  template = "${data.http.generic_user_data_template.body}"
 
   vars = {
     consul_agent_mode         = "client"
@@ -66,6 +82,10 @@ data "template_file" "consul_client_user_data" {
     os_auth_password          = "${var.os_auth_password}"
     os_auth_url               = "${var.os_auth_url}"
     os_project_id             = "${var.os_project_id}"
+
+    pre_configure_script     = ""
+    custom_write_files_block = ""
+    post_configure_script    = ""
   }
 }
 
