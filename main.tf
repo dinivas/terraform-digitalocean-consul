@@ -33,22 +33,26 @@ data "template_file" "consul_server_user_data_write_files" {
 }
 
 module "consul_server_instance" {
-  source = "github.com/dinivas/terraform-openstack-instance"
+  source = "../terraform-openstack-instance"
 
-  instance_name                 = "${var.consul_cluster_name}-server"
-  instance_count                = "${var.consul_server_instance_count}"
-  image_name                    = "${var.consul_server_image_name}"
-  flavor_name                   = "${var.consul_server_flavor_name}"
-  keypair                       = "${var.consul_server_keypair_name}"
-  network_ids                   = ["${var.consul_cluster_network_id}"]
-  subnet_ids                    = "${var.consul_cluster_subnet_id}"
-  instance_security_group_name  = "${var.consul_cluster_name}-server-sg"
-  instance_security_group_rules = "${var.consul_cluster_security_group_rules}"
-  security_groups_to_associate  = "${var.consul_cluster_security_groups_to_associate}"
-  metadata                      = "${var.consul_cluster_metadata}"
-  user_data                     = "${data.template_file.consul_server_user_data.rendered}"
-  enabled                       = "${var.enable_consul_cluster}"
-  availability_zone             = "${var.consul_cluster_availability_zone}"
+  #source = "github.com/dinivas/terraform-openstack-instance"
+
+  instance_name                      = "${var.consul_cluster_name}-server"
+  instance_count                     = "${var.consul_server_instance_count}"
+  image_name                         = "${var.consul_server_image_name}"
+  flavor_name                        = "${var.consul_server_flavor_name}"
+  keypair                            = "${var.consul_server_keypair_name}"
+  network_ids                        = ["${var.consul_cluster_network_id}"]
+  subnet_ids                         = "${var.consul_cluster_subnet_id}"
+  instance_security_group_name       = "${var.consul_cluster_name}-server-sg"
+  instance_security_group_rules      = "${var.consul_cluster_security_group_rules}"
+  security_groups_to_associate       = "${var.consul_cluster_security_groups_to_associate}"
+  metadata                           = "${var.consul_cluster_metadata}"
+  user_data                          = "${data.template_file.consul_server_user_data.rendered}"
+  enabled                            = "${var.enable_consul_cluster}"
+  availability_zone                  = "${var.consul_cluster_availability_zone}"
+  execute_on_destroy_instance_script = "${var.execute_on_destroy_server_instance_script}"
+  ssh_via_bastion_config             = "${var.ssh_via_bastion_config}"
 }
 
 // Conditional floating ip on the first Consul server
@@ -90,20 +94,24 @@ data "template_file" "consul_client_user_data" {
 }
 
 module "consul_client_instance" {
-  source = "github.com/dinivas/terraform-openstack-instance"
+  source = "../terraform-openstack-instance"
 
-  instance_name                 = "${var.consul_cluster_name}-client"
-  instance_count                = "${var.consul_client_instance_count}"
-  image_name                    = "${var.consul_client_image_name}"
-  flavor_name                   = "${var.consul_client_flavor_name}"
-  keypair                       = "${var.consul_client_keypair_name}"
-  network_ids                   = ["${var.consul_cluster_network_id}"]
-  subnet_ids                    = "${var.consul_cluster_subnet_id}"
-  instance_security_group_name  = "${var.consul_cluster_name}-client-sg"
-  instance_security_group_rules = "${var.consul_cluster_security_group_rules}"
-  security_groups_to_associate  = "${var.consul_cluster_security_groups_to_associate}"
-  metadata                      = "${var.consul_cluster_metadata}"
-  user_data                     = "${data.template_file.consul_client_user_data.rendered}"
-  enabled                       = "${var.enable_consul_cluster}"
-  availability_zone             = "${var.consul_cluster_availability_zone}"
+  #source = "github.com/dinivas/terraform-openstack-instance"
+
+  instance_name                      = "${var.consul_cluster_name}-client"
+  instance_count                     = "${var.consul_client_instance_count}"
+  image_name                         = "${var.consul_client_image_name}"
+  flavor_name                        = "${var.consul_client_flavor_name}"
+  keypair                            = "${var.consul_client_keypair_name}"
+  network_ids                        = ["${var.consul_cluster_network_id}"]
+  subnet_ids                         = "${var.consul_cluster_subnet_id}"
+  instance_security_group_name       = "${var.consul_cluster_name}-client-sg"
+  instance_security_group_rules      = "${var.consul_cluster_security_group_rules}"
+  security_groups_to_associate       = "${var.consul_cluster_security_groups_to_associate}"
+  metadata                           = "${var.consul_cluster_metadata}"
+  user_data                          = "${data.template_file.consul_client_user_data.rendered}"
+  enabled                            = "${var.enable_consul_cluster}"
+  availability_zone                  = "${var.consul_cluster_availability_zone}"
+  execute_on_destroy_instance_script = "${var.execute_on_destroy_client_instance_script}"
+  ssh_via_bastion_config             = "${var.ssh_via_bastion_config}"
 }

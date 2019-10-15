@@ -122,3 +122,23 @@ variable "generic_user_data_file_url" {
   type    = "string"
   default = "https://raw.githubusercontent.com/dinivas/terraform-openstack-shared/master/templates/generic-user-data.tpl"
 }
+
+variable "execute_on_destroy_server_instance_script" {
+  type    = "string"
+  default = ""
+}
+
+variable "execute_on_destroy_client_instance_script" {
+  type    = "string"
+  default = ""
+}
+
+variable "ssh_via_bastion_config" {
+  description = "config map used to connect via bastion ssh"
+  default     = {}
+}
+
+variable "consul_depends_on" {
+  default = []
+  type    = "list"
+}
