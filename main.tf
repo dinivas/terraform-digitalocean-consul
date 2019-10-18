@@ -33,9 +33,9 @@ data "template_file" "consul_server_user_data_write_files" {
 }
 
 module "consul_server_instance" {
-  source = "../terraform-openstack-instance"
+  # source = "../terraform-openstack-instance"
 
-  #source = "github.com/dinivas/terraform-openstack-instance"
+  source = "github.com/dinivas/terraform-openstack-instance"
 
   instance_name                      = "${var.consul_cluster_name}-server"
   instance_count                     = "${var.consul_server_instance_count}"
@@ -94,9 +94,9 @@ data "template_file" "consul_client_user_data" {
 }
 
 module "consul_client_instance" {
-  source = "../terraform-openstack-instance"
+  # source = "../terraform-openstack-instance"
 
-  #source = "github.com/dinivas/terraform-openstack-instance"
+  source = "github.com/dinivas/terraform-openstack-instance"
 
   instance_name                      = "${var.consul_cluster_name}-client"
   instance_count                     = "${var.consul_client_instance_count}"
