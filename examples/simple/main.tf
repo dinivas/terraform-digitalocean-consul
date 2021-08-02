@@ -1,16 +1,3 @@
-variable "os_auth_domain_name" {
-  type    = "string"
-  default = "default"
-}
-
-variable "os_auth_username" {}
-
-variable "os_auth_password" {}
-
-variable "os_auth_url" {}
-
-variable "os_project_id" {}
-
 module "mgmt_network" {
   #source              = "../terraform-os-network/"
   source              = "github.com/dinivas/terraform-openstack-network"
@@ -54,9 +41,4 @@ module "consul_cluster" {
     consul_cluster_name = "dnv-consul"
   }
 
-  os_auth_domain_name = "${var.os_auth_domain_name}"
-  os_auth_username    = "${var.os_auth_username}"
-  os_auth_password    = "${var.os_auth_password}"
-  os_auth_url         = "${var.os_auth_url}"
-  os_project_id       = "${var.os_project_id}"
 }

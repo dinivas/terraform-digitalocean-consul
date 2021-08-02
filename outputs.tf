@@ -1,21 +1,25 @@
-output "consul_server_instance_ids" {
-  value = "${module.consul_server_instance.ids}"
+output "consul_server_ids" {
+  value = digitalocean_droplet.consul_server.*.id
+}
+output "consul_server_names" {
+  value = digitalocean_droplet.consul_server.*.name
 }
 
-output "consul_client_instance_ids" {
-  value = "${module.consul_client_instance.ids}"
+output "consul_client_ids" {
+  value = digitalocean_droplet.consul_client.*.id
 }
-
-
-output "consul_server_network_fixed_ip_v4" {
-  value = "${module.consul_server_instance.network_fixed_ip_v4}"
+output "consul_client_names" {
+  value = digitalocean_droplet.consul_client.*.name
 }
-
-output "consul_client_network_fixed_ip_v4" {
-  value = "${module.consul_client_instance.network_fixed_ip_v4}"
+output "consul_server_private_fixed_ip_v4" {
+  value = digitalocean_droplet.consul_server.*.ipv4_address_private
 }
-
-output "consul_cluster_floating_ip" {
-  value       = "${openstack_networking_floatingip_v2.consul_cluster_floatingip.0.address}"
-  description = "The floating ip bind to first Consul server"
+output "consul_client_private_fixed_ip_v4" {
+  value = digitalocean_droplet.consul_client.*.ipv4_address_private
+}
+output "consul_server_public_fixed_ip_v4" {
+  value = digitalocean_droplet.consul_server.*.ipv4_address
+}
+output "consul_client_public_fixed_ip_v4" {
+  value = digitalocean_droplet.consul_client.*.ipv4_address
 }

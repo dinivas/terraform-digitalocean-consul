@@ -1,38 +1,35 @@
 variable "enable_consul_cluster" {
-  type    = "string"
+  type    = string
   default = "1"
+}
+variable "project_name" {
+  type    = string
 }
 
 variable "consul_cluster_name" {
   description = "The Consul cluster name"
-  type        = "string"
+  type        = string
 }
 
 variable "consul_cluster_domain" {
   description = "The Consul cluster domain name"
-  type        = "string"
+  type        = string
 }
 
 variable "consul_cluster_datacenter" {
   description = "The Consul cluster domain name"
-  type        = "string"
+  type        = string
 }
 
 variable "consul_cluster_availability_zone" {
   description = "The availability zone"
-  type        = "string"
+  type        = string
   default     = "null"
 }
 
-variable "consul_cluster_network_id" {
-  description = "The Network Id of the cluster"
-  type        = "string"
-}
-
-variable "consul_cluster_subnet_id" {
-  description = "The Network subnet Id for the cluster"
-  type        = "list"
-  default     = []
+variable "consul_cluster_network_name" {
+  description = "The Network Name of the cluster"
+  type        = string
 }
 
 variable "consul_cluster_security_group_rules" {
@@ -47,10 +44,6 @@ variable "consul_cluster_security_groups_to_associate" {
   description = "List of existing security groups to associate to consul instances."
 }
 
-variable "consul_cluster_metadata" {
-  default = {}
-}
-
 variable "consul_server_instance_count" {
   description = "Number of Consul server in the cluster"
   default     = 1
@@ -58,23 +51,12 @@ variable "consul_server_instance_count" {
 
 variable "consul_server_image_name" {
   description = "The image name of the consul server instance"
-  type        = "string"
+  type        = string
 }
 
 variable "consul_server_flavor_name" {
   description = "The flavor name of the consul server instance"
-  type        = "string"
-}
-
-variable "consul_server_keypair_name" {
-  description = "The Keypair name of the consul server instance"
-  type        = "string"
-}
-
-variable "consul_cluster_floating_ip_pool" {
-  description = "The floating Ip pool to use for the first consul server instance"
-  type        = "string"
-  default     = ""
+  type        = string
 }
 
 variable "consul_client_instance_count" {
@@ -84,53 +66,27 @@ variable "consul_client_instance_count" {
 
 variable "consul_client_image_name" {
   description = "The image name of the consul client instance"
-  type        = "string"
+  type        = string
 }
 
 variable "consul_client_flavor_name" {
   description = "The flavor name of the consul client instance"
-  type        = "string"
-}
-
-variable "consul_client_keypair_name" {
-  description = "The Keypair name of the consul client instance"
-  type        = "string"
-}
-
-variable "os_auth_url" {
-  type = "string"
-}
-
-variable "os_auth_domain_name" {
-  type    = "string"
-  default = "default"
-}
-
-variable "os_project_id" {
-  type = "string"
-}
-
-variable "os_auth_username" {
-  type = "string"
-}
-
-variable "os_auth_password" {
-  type = "string"
+  type        = string
 }
 
 variable "generic_user_data_file_url" {
-  type    = "string"
-  default = "https://raw.githubusercontent.com/dinivas/terraform-openstack-shared/master/templates/generic-user-data.tpl"
+  type    = string
+  default = "https://raw.githubusercontent.com/dinivas/terraform-shared/master/templates/generic-user-data.tpl"
 }
 
 variable "execute_on_destroy_server_instance_script" {
-  type    = "string"
-  default = ""
+  type    = list(string)
+  default = ["consul leave"]
 }
 
 variable "execute_on_destroy_client_instance_script" {
-  type    = "string"
-  default = ""
+  type    = list(string)
+  default = ["consul leave"]
 }
 
 variable "ssh_via_bastion_config" {
@@ -138,7 +94,9 @@ variable "ssh_via_bastion_config" {
   default     = {}
 }
 
-variable "consul_depends_on" {
-  default = []
-  type    = "list"
+variable "host_private_key" {}
+variable "bastion_private_key" {}
+
+variable "do_api_token" {
+  type = string
 }
