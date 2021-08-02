@@ -25,7 +25,7 @@ data "template_file" "consul_server_user_data" {
     consul_cluster_domain     = "${var.consul_cluster_domain}"
     consul_cluster_datacenter = "${var.consul_cluster_datacenter}"
     consul_cluster_name       = "${var.consul_cluster_name}"
-    do_region                 = var.project_availability_zone
+    do_region                 = var.consul_cluster_availability_zone
     do_api_token              = var.do_api_token
     enable_logging_graylog    = 1
 
@@ -105,7 +105,7 @@ data "template_file" "consul_client_user_data" {
     consul_cluster_domain     = "${var.consul_cluster_domain}"
     consul_cluster_datacenter = "${var.consul_cluster_datacenter}"
     consul_cluster_name       = "${var.consul_cluster_name}"
-    do_region                 = var.project_availability_zone
+    do_region                 = var.consul_cluster_availability_zone
     do_api_token              = var.do_api_token
     enable_logging_graylog    = 1
 
